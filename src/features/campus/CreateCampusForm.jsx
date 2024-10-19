@@ -54,6 +54,10 @@ function CreateCampusForm({ campusToEdit = {}, onCloseModal }) {
       onSubmit={handleSubmit(onSubmit, onError)}
       type={onCloseModal ? "modal" : "regular"}
     >
+      <FormRow label="序号" error={errors?.name?.message}>
+        <Input type="number" id="id" disabled={true} value={editId} />
+      </FormRow>
+
       <FormRow label="校名" error={errors?.name?.message}>
         <Input
           type="text"
