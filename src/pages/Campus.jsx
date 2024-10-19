@@ -4,18 +4,16 @@ import Heading from "../ui/Heading";
 import Row from "../ui/Row";
 import Pagination from "../ui/Pagination";
 import AddCampus from "../features/campus/AddCampus";
-import { useCampuses, useCampusesList } from "../features/campus/useCampus";
-import { useSearchParams } from "react-router-dom";
+import { useCampusesList } from "../features/campus/useCampus";
+import { useQueryParams } from "../hooks/useQueryParams";
 
 function Campus() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  // 获取当前 URL 中的查询参数
-  let paramValuePage = searchParams.get("page") || 1;
-  let paramValuePerPAge = searchParams.get("perPage") || 10;
-  // console.log(searchParams);
-  const par = { page: paramValuePage, perPage: paramValuePerPAge };
-  const { isLoading, campuses } = useCampusesList("campuses", par);
+  // 使用自定义 Hook 获取查询参数
+  const params = useQueryParams();
+
+  const { isLoading, campuses } = useCampusesList("campuses", params);
   // const { isLoading, campuses } = useCampuses();
+
   if (isLoading) return <Spinner />;
 
   return (

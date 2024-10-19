@@ -13,16 +13,24 @@ export async function getCampuses() {
 }
 
 export async function getList(resource, params) {
+  const {
+    paramFilter,
+    paramValuePage,
+    paramValuePerPage,
+    paramValueOrder,
+    paramValueFiled,
+  } = params;
+
   const queryParams = {
     //和后端统一
     filter:
-      params.filter && Object.keys(params.filter).length > 0
-        ? JSON.stringify(params.filter)
+      paramFilter && Object.keys(paramFilter).length > 0
+        ? JSON.stringify(paramFilter)
         : null,
-    sort_order: params.order || "ASC",
-    page: !isNaN(params.page) && params.page >= 1 ? params.page : 1,
-    per_page: params.perPage || 10,
-    sort_field: params.field || "id",
+    sort_order: paramValueOrder || "ASC",
+    page: !isNaN(paramValuePage) && paramValuePage >= 1 ? paramValuePage : 1,
+    per_page: paramValuePerPage || 10,
+    sort_field: paramValueFiled || "id",
   };
 
   // 根据参数生成 URL
