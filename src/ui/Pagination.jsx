@@ -66,7 +66,11 @@ function Pagination({ perPage, totalPage }) {
     ? 1
     : Number(searchParams.get("page"));
 
-  const [pageToInputValue, setPageToInputValue] = useState("");
+  const currentPerPage = !searchParams.get("perPage")
+    ? 1
+    : Number(searchParams.get("perPage"));
+
+  const [pageToInputValue, setPageToInputValue] = useState();
   const handlePageToInputChange = (event) => {
     // 将用户输入的值限定在1-最大页数之间
     if (event.target.value < 1) event.target.value = 1;
@@ -81,7 +85,7 @@ function Pagination({ perPage, totalPage }) {
     }
   };
 
-  const [pageSize, setPageSize] = useState(); // 默认每页显示10条
+  const [pageSize, setPageSize] = useState(currentPerPage); // 默认每页显示10条
   const handlePageSizeChange = (event) => {
     const selectedSize = parseInt(event.target.value, 10);
     setPageSize(selectedSize);
