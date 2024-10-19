@@ -10,11 +10,10 @@ import { useSearchParams } from "react-router-dom";
 function Campus() {
   const [searchParams, setSearchParams] = useSearchParams();
   // 获取当前 URL 中的查询参数
-  let paramValue = searchParams.get("page");
-  paramValue == null ? (paramValue = 1) : paramValue;
-  console.log(searchParams);
-  const pagination = { page: paramValue };
-  const par = { pagination };
+  let paramValuePage = searchParams.get("page") || 1;
+  let paramValuePerPAge = searchParams.get("perPage") || 10;
+  // console.log(searchParams);
+  const par = { page: paramValuePage, perPage: paramValuePerPAge };
   const { isLoading, campuses } = useCampusesList("campuses", par);
   // const { isLoading, campuses } = useCampuses();
   if (isLoading) return <Spinner />;
@@ -29,7 +28,10 @@ function Campus() {
         <AddCampus />
         <CampusTable campuses={campuses.campuses} />
       </Row>
-      <Pagination count={campuses.per_page * campuses.total_pages} />
+      <Pagination
+        perPage={campuses.per_page}
+        totalPage={campuses.total_pages}
+      />
     </>
   );
 }

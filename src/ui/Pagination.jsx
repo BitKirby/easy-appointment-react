@@ -1,7 +1,8 @@
+import { useState, useEffect } from "react";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi2";
 import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
-import { PAGE_SIZE } from "../utils/constants";
+import Input from "./Input";
 
 const StyledPagination = styled.div`
   width: 100%;
@@ -59,16 +60,50 @@ const PaginationButton = styled.button`
   }
 `;
 
-function Pagination({ count }) {
+function Pagination({ perPage, totalPage }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = !searchParams.get("page")
     ? 1
     : Number(searchParams.get("page"));
 
-  const pageCount = Math.ceil(count / PAGE_SIZE);
+  const [pageToInputValue, setPageToInputValue] = useState("");
+  const handlePageToInputChange = (event) => {
+    // 将用户输入的值限定在1-最大页数之间
+    if (event.target.value < 1) event.target.value = 1;
+    if (event.target.value > totalPage) event.target.value = totalPage;
+    setPageToInputValue(event.target.value);
+  };
+
+  const handlePageToEventEnterKeyDown = (event) => {
+    if (event.key === "Enter") {
+      searchParams.set("page", pageToInputValue);
+      setSearchParams(searchParams);
+    }
+  };
+
+  const [pageSize, setPageSize] = useState(); // 默认每页显示10条
+  const handlePageSizeChange = (event) => {
+    const selectedSize = parseInt(event.target.value, 10);
+    setPageSize(selectedSize);
+    setSearchParams({ perPage: selectedSize });
+  };
+
+  useEffect(() => {
+    const page = searchParams.get("page");
+    if (page) {
+      const pageNumber = parseInt(page, 10);
+
+      // 如果用户输入的页面数超过 maxPage 或小于 1，自动修正
+      if (pageNumber > totalPage) {
+        setSearchParams({ page: totalPage }, { replace: true });
+      } else if (pageNumber < 1 || isNaN(pageNumber)) {
+        setSearchParams({ page: 1 }, { replace: true });
+      }
+    }
+  }, [searchParams, setSearchParams, totalPage]);
 
   function nextPage() {
-    const next = currentPage === pageCount ? currentPage : currentPage + 1;
+    const next = currentPage === totalPage ? currentPage : currentPage + 1;
 
     searchParams.set("page", next);
     setSearchParams(searchParams);
@@ -81,31 +116,46 @@ function Pagination({ count }) {
     setSearchParams(searchParams);
   }
 
-  if (pageCount <= 1) return null;
-
   return (
     <StyledPagination>
       <P>
-        Showing <span>{(currentPage - 1) * PAGE_SIZE + 1}</span> to{" "}
+        <span>{(currentPage - 1) * perPage + 1}</span> -{" "}
         <span>
-          {currentPage === pageCount ? count : currentPage * PAGE_SIZE}
+          {currentPage === totalPage ? totalPage : currentPage * perPage}
         </span>{" "}
-        of <span>{count}</span> results
+        总记录数：<span>{totalPage}</span> 总页数：<span>{totalPage} </span>{" "}
+        跳转
+        <Input
+          type="number"
+          value={pageToInputValue}
+          onChange={handlePageToInputChange}
+          onKeyDown={handlePageToEventEnterKeyDown}
+          style={{ width: "50px", padding: "5px" }}
+        ></Input>{" "}
+        每页显示
+        <select id="pageSize" value={pageSize} onChange={handlePageSizeChange}>
+          <option value={10}>10</option>
+          <option value={25}>25</option>
+          <option value={50}>50</option>
+          <option value={100}>100</option>
+        </select>
       </P>
 
-      <Buttons>
-        <PaginationButton onClick={prevPage} disabled={currentPage === 1}>
-          <HiChevronLeft /> <span>Previous</span>
-        </PaginationButton>
+      {totalPage <= 1 ? null : (
+        <Buttons>
+          <PaginationButton onClick={prevPage} disabled={currentPage === 1}>
+            <HiChevronLeft /> <span>上一页</span>
+          </PaginationButton>
 
-        <PaginationButton
-          onClick={nextPage}
-          disabled={currentPage === pageCount}
-        >
-          <span>Next</span>
-          <HiChevronRight />
-        </PaginationButton>
-      </Buttons>
+          <PaginationButton
+            onClick={nextPage}
+            disabled={currentPage === totalPage}
+          >
+            <span>下一页</span>
+            <HiChevronRight />
+          </PaginationButton>
+        </Buttons>
+      )}
     </StyledPagination>
   );
 }
