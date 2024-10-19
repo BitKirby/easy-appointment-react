@@ -25,7 +25,7 @@ function CreateCampusForm({ campusToEdit = {}, onCloseModal }) {
   function onSubmit(data) {
     if (isEditSession)
       editCampus(
-        { newCampusData: { ...data }, id: editId },
+        { resource: "campuses", data: { ...data }, id: editId },
         {
           onSuccess: (data) => {
             reset();
@@ -35,7 +35,7 @@ function CreateCampusForm({ campusToEdit = {}, onCloseModal }) {
       );
     else
       createCampus(
-        { resource: "campuses", data: data },
+        { resource: "campuses", data: { ...data } },
         {
           onSuccess: (data) => {
             reset();
@@ -67,10 +67,10 @@ function CreateCampusForm({ campusToEdit = {}, onCloseModal }) {
 
       <FormRow label="校区相关描述" error={errors?.description?.message}>
         <Textarea
-          type="number"
+          type="text"
           id="description"
-          defaultValue=""
           disabled={isWorking}
+          {...register("description")}
         />
       </FormRow>
 

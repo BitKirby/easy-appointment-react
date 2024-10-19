@@ -53,6 +53,29 @@ export async function getList(resource, params) {
 
 export async function createEditCampus(newCampus, id) {}
 
+export async function EditCampusAPI(resource, id, data) {
+  return fetch(`${apiUrl}/${resource}/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((json) => {
+      return { data: json.data };
+    })
+    .catch((error) => {
+      console.error("Error updating resource:", error);
+      throw error; // optional error handling
+    });
+}
+
 export async function createCampusAPI(resource, data) {
   return fetch(`${apiUrl}/${resource}/`, {
     method: "POST",

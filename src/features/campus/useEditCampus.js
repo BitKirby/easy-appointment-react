@@ -1,15 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createEditCampus } from "../../services/apiCampus";
+import { EditCampusAPI } from "../../services/apiCampus";
 import { toast } from "react-hot-toast";
 
 export function useEditCampus() {
   const queryClient = useQueryClient();
 
   const { mutate: editCampus, isLoading: isEditing } = useMutation({
-    mutationFn: ({ newCampusData, id }) => createEditCampus(newCampusData, id),
+    mutationFn: ({ resource, id, data }) => EditCampusAPI(resource, id, data),
     onSuccess: () => {
-      toast.success("Campus successfully edited");
-      queryClient.invalidateQueries({ queryKey: ["campuss"] });
+      toast.success("校区数据已更新");
+      queryClient.invalidateQueries({ queryKey: ["campuses"] });
     },
     onError: (err) => toast.error(err.message),
   });
