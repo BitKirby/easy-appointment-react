@@ -1,14 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { createEditCampus } from "../../services/apiCampus";
+import { createCampusAPI } from "../../services/apiCampus";
 
 export function useCreateCampus() {
   const queryClient = useQueryClient();
 
   const { mutate: createCampus, isLoading: isCreating } = useMutation({
-    mutationFn: createEditCampus,
+    mutationFn: ({ resource, data }) => createCampusAPI(resource, data), // call your API
     onSuccess: () => {
-      toast.success("New campus successfully created");
+      toast.success("新的校区已成功追加");
       queryClient.invalidateQueries({ queryKey: ["campuses"] });
     },
     onError: (err) => toast.error(err.message),

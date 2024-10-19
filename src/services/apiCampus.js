@@ -1,5 +1,7 @@
 import queryString from "query-string";
 
+const apiUrl = "http://127.0.0.1:5000/api";
+
 export async function getCampuses() {
   // 使用 fetch 抓取数据
   const response = await fetch("http://127.0.0.1:5000/api/campuses/");
@@ -34,7 +36,7 @@ export async function getList(resource, params) {
   };
 
   // 根据参数生成 URL
-  const url = `http://127.0.0.1:5000/api/${resource}/search?${queryString.stringify(
+  const url = `${apiUrl}/${resource}/search?${queryString.stringify(
     queryParams
   )}`;
 
@@ -50,5 +52,28 @@ export async function getList(resource, params) {
 }
 
 export async function createEditCampus(newCampus, id) {}
+
+export async function createCampusAPI(resource, data) {
+  return fetch(`${apiUrl}/${resource}/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((json) => {
+      return { data: { ...data, id: json.id } };
+    })
+    .catch((error) => {
+      console.error("Error creating resource:", error);
+      throw error; // optional, depending on how you want to handle errors
+    });
+}
 
 export async function deleteCampus(id) {}

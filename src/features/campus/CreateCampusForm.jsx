@@ -23,11 +23,9 @@ function CreateCampusForm({ campusToEdit = {}, onCloseModal }) {
   const { errors } = formState;
 
   function onSubmit(data) {
-    const image = typeof data.image === "string" ? data.image : data.image[0];
-
     if (isEditSession)
       editCampus(
-        { newCampusData: { ...data, image }, id: editId },
+        { newCampusData: { ...data }, id: editId },
         {
           onSuccess: (data) => {
             reset();
@@ -37,7 +35,7 @@ function CreateCampusForm({ campusToEdit = {}, onCloseModal }) {
       );
     else
       createCampus(
-        { ...data, image: image },
+        { resource: "campuses", data: data },
         {
           onSuccess: (data) => {
             reset();
