@@ -6,9 +6,9 @@ export function useDeleteCampus() {
   const queryClient = useQueryClient();
 
   const { isLoading: isDeleting, mutate: deleteCampus } = useMutation({
-    mutationFn: deleteCampusApi,
+    mutationFn: ({ resource, id }) => deleteCampusApi(resource, id),
     onSuccess: () => {
-      toast.success("Campus successfully deleted");
+      toast.success("校园信息已成功删除");
 
       queryClient.invalidateQueries({
         queryKey: ["campuses"],

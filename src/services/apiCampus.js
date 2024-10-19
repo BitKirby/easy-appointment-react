@@ -51,8 +51,6 @@ export async function getList(resource, params) {
   return data.data;
 }
 
-export async function createEditCampus(newCampus, id) {}
-
 export async function EditCampusAPI(resource, id, data) {
   return fetch(`${apiUrl}/${resource}/${id}`, {
     method: "PUT",
@@ -99,4 +97,24 @@ export async function createCampusAPI(resource, data) {
     });
 }
 
-export async function deleteCampus(id) {}
+export async function deleteCampus(resource, id) {
+  return fetch(`${apiUrl}/${resource}/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((json) => {
+      return { data: json.data };
+    })
+    .catch((error) => {
+      console.error("Error deleting resource:", error);
+      throw error; // optional error handling
+    });
+}

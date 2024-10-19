@@ -30,11 +30,11 @@ function CampusRow({ campus }) {
   const { isDeleting, deleteCampus } = useDeleteCampus();
   const { isCreating, createCampus } = useCreateCampus();
 
-  const { id: campusId, name, description } = campus;
+  const { id, name, description } = campus;
 
   return (
     <Table.Row>
-      <Campus>{campusId}</Campus>
+      <Campus>{id}</Campus>
       <Name> {name}</Name>
       <Description>{description}</Description>
 
@@ -57,7 +57,7 @@ function CampusRow({ campus }) {
               <ConfirmDelete
                 resourceName="campuss"
                 disabled={isDeleting}
-                onConfirm={() => deleteCampus(campusId)}
+                onConfirm={() => deleteCampus({ resource: "campuses", id: id })}
               />
             </Modal.Window>
           </Menus.Menu>
